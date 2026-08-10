@@ -61,7 +61,8 @@ makepkg -si
 1. Create `<name>/PKGBUILD`. Keep one directory per package at the repository
    root — paru scans recursively, three levels deep by default.
 2. Generate its metadata: `cd <name> && makepkg --printsrcinfo > .SRCINFO`.
-   CI fails if `.SRCINFO` and `PKGBUILD` disagree.
+   paru reads `.SRCINFO` to resolve names and versions, so regenerate it every
+   time the `PKGBUILD` changes or paru will act on stale metadata.
 3. Commit and push, then `paru -Sy --pkgbuilds` on any machine using the repo.
 
 Prefer a prebuilt release asset with a real `sha256sums` entry, so installing
@@ -78,11 +79,3 @@ the upstream version means keeping `pkgver` and incrementing `pkgrel` instead.
 For `transparent-xcursor-theme` the checksum comes straight from its release
 workflow: the run summary prints the exact `pkgver` and `sha256sums` lines to
 paste in. `updpkgsums` (from `pacman-contrib`) recomputes them locally.
-
-## CI
-
-[`validate.yml`](.github/workflows/validate.yml) runs `makepkg` on every package
-in an Arch container exactly as paru would, then unpacks the result and checks
-that the theme landed in the right place and that its ~168 cursor aliases
-survived packaging as symlinks rather than being expanded into copies. It also
-verifies `.SRCINFO` has not drifted from its `PKGBUILD`.

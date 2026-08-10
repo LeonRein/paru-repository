@@ -1,0 +1,38 @@
+# Maintainer: Leon Rein <leon@lr-net.com>
+
+pkgname=transparent-xcursor-theme
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk sessions"
+arch=('any')
+url="https://github.com/LeonRein/transparent-xcursor-theme"
+license=('MIT')
+makedepends=('git' 'python')
+
+# Pinned by commit rather than by tag: a commit cannot be moved after the fact,
+# so a rebuild always produces the same package. To release a new version, bump
+# pkgver and _commit together and regenerate .SRCINFO.
+_commit='eb832a2768b5c612c0e98ecc044ac708e5c2ecf0'
+source=("$pkgname::git+$url.git#commit=$_commit")
+sha256sums=('SKIP')
+
+build() {
+	cd "$pkgname"
+	make PREFIX=/usr
+}
+
+check() {
+	cd "$pkgname"
+	# Re-parses every generated cursor and asserts it is fully transparent, so a
+	# broken build fails here instead of shipping a visible pointer.
+	make check
+}
+
+package() {
+	cd "$pkgname"
+	make install PREFIX=/usr DESTDIR="$pkgdir"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+	install -Dm644 examples/kiosk.desktop "$pkgdir/usr/share/doc/$pkgname/examples/kiosk.desktop"
+	install -Dm755 examples/cage-kiosk "$pkgdir/usr/share/doc/$pkgname/examples/cage-kiosk"
+}

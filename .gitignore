@@ -1,11 +1,6 @@
-# Build output
-/x86_64/
-/aarch64/
-*.pkg.tar.*
-*.log
-
 # makepkg working directories
-pkgbuilds/*/src/
-pkgbuilds/*/pkg/
-pkgbuilds/*/*.pkg.tar.*
-pkgbuilds/*/transparent-xcursor-theme/
+*/src/
+*/pkg/
+*/*.pkg.tar.*
+*/*.tar.gz
+*.log

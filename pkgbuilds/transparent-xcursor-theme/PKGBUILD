@@ -7,30 +7,22 @@ pkgdesc="Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk s
 arch=('any')
 url="https://github.com/LeonRein/transparent-xcursor-theme"
 license=('MIT')
-makedepends=('git' 'python')
 
-# Pinned by commit rather than by tag: a commit cannot be moved after the fact,
-# so a rebuild always produces the same package. To release a new version, bump
-# pkgver and _commit together and regenerate .SRCINFO.
-_commit='eb832a2768b5c612c0e98ecc044ac708e5c2ecf0'
-source=("$pkgname::git+$url.git#commit=$_commit")
-sha256sums=('SKIP')
-
-build() {
-	cd "$pkgname"
-	make PREFIX=/usr
-}
-
-check() {
-	cd "$pkgname"
-	# Re-parses every generated cursor and asserts it is fully transparent, so a
-	# broken build fails here instead of shipping a visible pointer.
-	make check
-}
+# Upstream CI builds the theme with xcursorgen and publishes the finished
+# cursors as a release asset, so there is nothing to compile here: no build()
+# function and no makedepends. Release assets are stable once uploaded, which is
+# why this can carry a real checksum rather than SKIP.
+source=("$pkgname-$pkgver.tar.gz::$url/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('f35911200b75ba4dfe1da7a2a814d78b4a55ff117f4da1508b7df18a87043dc3')
 
 package() {
-	cd "$pkgname"
-	make install PREFIX=/usr DESTDIR="$pkgdir"
+	cd "$pkgname-$pkgver"
+
+	# -a preserves the ~168 relative symlinks; copying them as regular files
+	# would turn a 150 KB theme into roughly 20 MB.
+	install -d "$pkgdir/usr/share/icons"
+	cp -a transparent "$pkgdir/usr/share/icons/transparent"
+
 	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
 	install -Dm644 examples/kiosk.desktop "$pkgdir/usr/share/doc/$pkgname/examples/kiosk.desktop"

@@ -49,13 +49,16 @@ jobs:
           git config --system --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Check .SRCINFO is in sync with each PKGBUILD
+        shell: bash
         run: |
           status=0
           for dir in pkgbuilds/*/; do
             [ -f "$dir/.SRCINFO" ] || continue
-            if ! sudo -u builder makepkg --printsrcinfo -p "$dir/PKGBUILD" \
+            # makepkg insists on the PKGBUILD being in the current directory,
+            # so cd into each package rather than using -p.
+            if ! ( cd "$dir" && sudo -u builder makepkg --printsrcinfo ) \
                  | diff -u "$dir/.SRCINFO" - ; then
-              echo "::error file=$dir/.SRCINFO::out of date, regenerate with: cd $dir && makepkg --printsrcinfo > .SRCINFO"
+              echo "::error file=${dir}.SRCINFO::out of date, regenerate with: (cd $dir && makepkg --printsrcinfo > .SRCINFO)"
               status=1
             fi
           done

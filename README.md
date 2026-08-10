@@ -5,6 +5,11 @@ CI builds them and publishes the finished packages plus the pacman database to
 the orphan [`repo`](../../tree/repo) branch, so `paru`/`pacman` can install them
 as ordinary binary packages — no local compiling, no AUR round-trip.
 
+Packages here prefer prebuilt upstream release assets over building from source.
+`transparent-xcursor-theme`, for example, is built by its own repository's CI and
+published as a release tarball; this PKGBUILD only unpacks it, so it declares no
+`makedepends` and has no `build()` function at all.
+
 | Package | Description |
 | --- | --- |
 | [`transparent-xcursor-theme`](pkgbuilds/transparent-xcursor-theme) | Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk sessions |
@@ -80,14 +85,20 @@ makepkg -si
 3. Commit and push. The `build-repo` workflow rebuilds everything and republishes
    the `repo` branch.
 
-Prefer pinning sources by commit (`#commit=<sha>`) over branch: a commit cannot
-be moved afterwards, so a rebuild always produces the same package.
+Prefer a prebuilt release asset with a real `sha256sums` entry. Failing that,
+pin a git source by commit (`#commit=<sha>`) rather than by branch or tag: a
+commit cannot be moved afterwards, so a rebuild always produces the same package.
 
 ## Updating a package
 
-Bump `pkgver` (and `_commit`, if the PKGBUILD pins one), reset `pkgrel=1`, then
-regenerate `.SRCINFO` and push. Changing only the packaging and not the upstream
-version means keeping `pkgver` and incrementing `pkgrel` instead.
+Bump `pkgver`, update `sha256sums` to the new release's checksum, reset
+`pkgrel=1`, then regenerate `.SRCINFO` and push. Changing only the packaging and
+not the upstream version means keeping `pkgver` and incrementing `pkgrel`
+instead.
+
+For `transparent-xcursor-theme` the checksum comes straight from its release
+workflow: the run summary prints the exact `pkgver` and `sha256sums` lines to
+paste in. `updpkgsums` (from `pacman-contrib`) recomputes them locally.
 
 ## Signing packages (optional)
 

@@ -1,11 +1,11 @@
 pkgbase = transparent-xcursor-theme
 	pkgdesc = Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk sessions
-	pkgver = 1.0.0
+	pkgver = 1.1.0
 	pkgrel = 1
 	url = https://github.com/LeonRein/transparent-xcursor-theme
 	arch = any
 	license = MIT
-	source = transparent-xcursor-theme-1.0.0.tar.gz::https://github.com/LeonRein/transparent-xcursor-theme/releases/download/v1.0.0/transparent-xcursor-theme-1.0.0.tar.gz
-	sha256sums = f35911200b75ba4dfe1da7a2a814d78b4a55ff117f4da1508b7df18a87043dc3
+	source = transparent-xcursor-theme-1.1.0.tar.gz::https://github.com/LeonRein/transparent-xcursor-theme/releases/download/v1.1.0/transparent-xcursor-theme-1.1.0.tar.gz
+	sha256sums = 4271f933c95353fe734a3d230ec79234d73978a859fd9b41b07865ec92041086
 
 pkgname = transparent-xcursor-theme

@@ -1,4 +1,4 @@
-# aur-repository
+# paru-repository
 
 A personal [paru](https://github.com/Morganamilo/paru) **PKGBUILD repository** —
 a git repo full of PKGBUILDs that paru treats just like the AUR, so packages
@@ -20,7 +20,7 @@ Requires **paru 2.0 or newer**. Add to `/etc/paru.conf` (or
 
 ```ini
 [leonrein]
-Url = https://github.com/LeonRein/aur-repository.git
+Url = https://github.com/LeonRein/paru-repository.git
 ```
 
 Then sync and install:
@@ -36,12 +36,12 @@ paru -S transparent-xcursor-theme
 
 ```ini
 [leonrein]
-Url = https://github.com/LeonRein/aur-repository.git
+Url = https://github.com/LeonRein/paru-repository.git
 SkipReview = true      # skip the diff review prompt for your own PKGBUILDs
 Depth = 3              # how deep to scan for PKGBUILDs; 3 is the default
 ```
 
-- `Path = /home/leon/aur-repository` points at a local clone instead of a URL,
+- `Path = /home/leon/paru-repository` points at a local clone instead of a URL,
   which is handy while editing a PKGBUILD.
 - PKGBUILD repos take **priority over the AUR**, so a package here masks an AUR
   package of the same name. Useful deliberately, surprising by accident.
@@ -51,8 +51,8 @@ Depth = 3              # how deep to scan for PKGBUILDs; 3 is the default
 Every package directory is a normal PKGBUILD, so `makepkg` works directly:
 
 ```sh
-git clone https://github.com/LeonRein/aur-repository.git
-cd aur-repository/transparent-xcursor-theme
+git clone https://github.com/LeonRein/paru-repository.git
+cd paru-repository/transparent-xcursor-theme
 makepkg -si
 ```
 

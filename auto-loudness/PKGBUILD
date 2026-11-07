@@ -1,0 +1,22 @@
+# Maintainer: Leon Rein <leon@lr-net.com>
+
+pkgname=auto-loudness
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob"
+arch=('any')
+url="https://github.com/LeonRein/auto-loudness"
+license=('MIT')
+depends=('python' 'pipewire' 'alsa-utils')
+# Pure Python, nothing to build: the tag archive is installed as-is.
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('5ff1c6c0b475597c0c83d8e98a757d4b6d4c8a4f398ece6756bb7ed78c22c555')
+
+package() {
+	cd "$pkgname-$pkgver"
+	install -Dm755 auto_loudness.py "$pkgdir/usr/bin/auto-loudness"
+	install -Dm644 auto-loudness.service "$pkgdir/usr/lib/systemd/user/auto-loudness.service"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+	install -Dm644 config.example.toml "$pkgdir/usr/share/doc/$pkgname/config.example.toml"
+}

@@ -7,6 +7,7 @@ here can be installed and upgraded with the same commands.
 | Package | Description |
 | --- | --- |
 | [`transparent-xcursor-theme`](transparent-xcursor-theme) | Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk sessions |
+| [`auto-loudness`](auto-loudness) | ISO 226:2023 loudness compensation that follows the Focusrite Scarlett volume knob |
 
 Nothing here is compiled on your machine. Each package installs a prebuilt
 release asset, so no build tooling is pulled in — installing

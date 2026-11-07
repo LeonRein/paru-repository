@@ -1,7 +1,7 @@
 # Maintainer: Leon Rein <leon@lr-net.com>
 
 pkgname=auto-loudness
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob"
 arch=('any')
@@ -10,7 +10,7 @@ license=('MIT')
 depends=('python' 'pipewire' 'alsa-utils')
 # Pure Python, nothing to build: the tag archive is installed as-is.
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('5ff1c6c0b475597c0c83d8e98a757d4b6d4c8a4f398ece6756bb7ed78c22c555')
+sha256sums=('e71f37cd78ef8b4d8c87b63de42759106c8dfe0f5f811315456393a15c4da457')
 
 package() {
 	cd "$pkgname-$pkgver"

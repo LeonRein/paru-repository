@@ -1,6 +1,6 @@
 pkgbase = auto-loudness
 	pkgdesc = ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob
-	pkgver = 0.1.1
+	pkgver = 0.1.2
 	pkgrel = 1
 	url = https://github.com/LeonRein/auto-loudness
 	arch = any
@@ -8,7 +8,7 @@ pkgbase = auto-loudness
 	depends = python
 	depends = pipewire
 	depends = alsa-utils
-	source = auto-loudness-0.1.1.tar.gz::https://github.com/LeonRein/auto-loudness/archive/refs/tags/v0.1.1.tar.gz
-	sha256sums = e71f37cd78ef8b4d8c87b63de42759106c8dfe0f5f811315456393a15c4da457
+	source = auto-loudness-0.1.2.tar.gz::https://github.com/LeonRein/auto-loudness/archive/refs/tags/v0.1.2.tar.gz
+	sha256sums = 56fdace6998970499bb2428a545f909bdfac7e517f9af43e2933e4253163aa1d
 
 pkgname = auto-loudness

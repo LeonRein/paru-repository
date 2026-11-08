@@ -1,20 +1,28 @@
 # Maintainer: Leon Rein <leon@lr-net.com>
 
 pkgname=auto-loudness
-pkgver=0.1.3
+pkgver=0.2.0
 pkgrel=1
 pkgdesc="ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob"
 arch=('any')
 url="https://github.com/LeonRein/auto-loudness"
 license=('MIT')
 depends=('python' 'pipewire' 'alsa-utils')
+optdepends=('python-gobject: filter curve window'
+            'gtk4: filter curve window'
+            'libadwaita: filter curve window')
 # Pure Python, nothing to build: the tag archive is installed as-is.
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('03e53e45b7b4463f72bfbb29ad9501cca357cd331bec9dcd7ae4ef196695e194')
+sha256sums=('817159ffc1002e9f1a2f5380180b9fa2bf455218bc2b100b4074ae3ca40248e0')
 
 package() {
 	cd "$pkgname-$pkgver"
-	install -Dm755 auto_loudness.py "$pkgdir/usr/bin/auto-loudness"
+	# the gui module is imported from the script's own (symlink-resolved) directory
+	install -Dm755 auto_loudness.py "$pkgdir/usr/lib/$pkgname/auto_loudness.py"
+	install -Dm644 auto_loudness_gui.py "$pkgdir/usr/lib/$pkgname/auto_loudness_gui.py"
+	install -dm755 "$pkgdir/usr/bin"
+	ln -s "/usr/lib/$pkgname/auto_loudness.py" "$pkgdir/usr/bin/auto-loudness"
+	install -Dm644 io.github.leonrein.AutoLoudness.desktop "$pkgdir/usr/share/applications/io.github.leonrein.AutoLoudness.desktop"
 	install -Dm644 auto-loudness.service "$pkgdir/usr/lib/systemd/user/auto-loudness.service"
 	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"

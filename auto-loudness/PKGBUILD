@@ -1,7 +1,7 @@
 # Maintainer: Leon Rein <leon@lr-net.com>
 
 pkgname=auto-loudness
-pkgver=0.3.1
+pkgver=0.3.2
 pkgrel=1
 pkgdesc="ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob"
 arch=('any')
@@ -14,7 +14,7 @@ optdepends=('python-gobject: filter curve window'
             'libpulse: panel icon')
 # Pure Python, nothing to build: the tag archive is installed as-is.
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('f4edb5edd6cc0667820234f4222d22fc646e08dd4759b2ad2f9b99c5481c495f')
+sha256sums=('9fe93cba8900f0bcd3f1d22012f2a5c598420a5e0f335addafbd2a73b5d57071')
 
 package() {
 	cd "$pkgname-$pkgver"
@@ -25,6 +25,7 @@ package() {
 	install -dm755 "$pkgdir/usr/bin"
 	ln -s "/usr/lib/$pkgname/auto_loudness.py" "$pkgdir/usr/bin/auto-loudness"
 	install -Dm644 io.github.leonrein.AutoLoudness.desktop "$pkgdir/usr/share/applications/io.github.leonrein.AutoLoudness.desktop"
+	install -Dm644 io.github.leonrein.AutoLoudness.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.leonrein.AutoLoudness.svg"
 	install -Dm644 auto-loudness.service "$pkgdir/usr/lib/systemd/user/auto-loudness.service"
 	# enabled for every user, starting with PipeWire (opt out: systemctl --user mask auto-loudness)
 	install -dm755 "$pkgdir/usr/lib/systemd/user/pipewire.service.wants"

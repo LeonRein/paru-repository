@@ -1,6 +1,6 @@
 pkgbase = auto-loudness
 	pkgdesc = ISO 226 loudness compensation that follows the Focusrite Scarlett volume knob
-	pkgver = 0.3.2
+	pkgver = 0.4.0
 	pkgrel = 1
 	url = https://github.com/LeonRein/auto-loudness
 	arch = any
@@ -12,7 +12,7 @@ pkgbase = auto-loudness
 	optdepends = gtk4: filter curve window
 	optdepends = libadwaita: filter curve window
 	optdepends = libpulse: panel icon
-	source = auto-loudness-0.3.2.tar.gz::https://github.com/LeonRein/auto-loudness/archive/refs/tags/v0.3.2.tar.gz
-	sha256sums = 9fe93cba8900f0bcd3f1d22012f2a5c598420a5e0f335addafbd2a73b5d57071
+	source = auto-loudness-0.4.0.tar.gz::https://github.com/LeonRein/auto-loudness/archive/refs/tags/v0.4.0.tar.gz
+	sha256sums = a6507dfbee65d8e160ac9333ff8ddc5cb7727cebafe5fba1489b530cfe0c367a
 
 pkgname = auto-loudness

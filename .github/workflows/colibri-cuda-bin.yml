@@ -1,0 +1,105 @@
+name: colibri-cuda-bin
+
+# Keeps colibri-cuda-bin on the latest colibri release without anyone
+# touching the repository: checks daily, builds only when there is a new
+# upstream release, a new CUDA major version in Arch, a manual force, or a
+# change to the build itself. See colibri-cuda-bin/PKGBUILD.
+
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Rebuild without a new upstream release (pkgrel + 1)'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - colibri-cuda-bin/build.sh
+      - .github/workflows/colibri-cuda-bin.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: colibri-cuda-bin
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decide whether to build
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ github.event_name == 'push' || inputs.force == true }}
+        run: |
+          set -euo pipefail
+          tag=$(gh api repos/JustVugg/colibri/releases/latest --jq .tag_name)
+          ver=${tag#v}
+          ver=${ver//-/_}
+          cudaver=$(curl -fsSL https://archlinux.org/packages/extra/x86_64/cuda/json/ | jq -r .pkgver)
+          cudamajor=${cudaver%%.*}
+          eval "$(grep -E '^(pkgver|pkgrel|_cudamajor)=' colibri-cuda-bin/PKGBUILD)"
+          echo "upstream $tag, packaged $pkgver-$pkgrel; cuda $cudaver, packaged against $_cudamajor; force $FORCE"
+          if [ "$ver" != "$pkgver" ]; then
+            rel=1
+          elif [ "$cudamajor" != "$_cudamajor" ] || [ "$FORCE" = true ]; then
+            rel=$((pkgrel + 1))
+          else
+            echo "up to date"
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "build=true"
+            echo "tag=$tag"
+            echo "ver=$ver"
+            echo "rel=$rel"
+            echo "cudamajor=$cudamajor"
+          } >> "$GITHUB_OUTPUT"
+
+      # The cuda package alone unpacks to ~5.5 GB; drop preinstalled SDKs.
+      - name: Free disk space
+        if: steps.decide.outputs.build == 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Build in an Arch container
+        if: steps.decide.outputs.build == 'true'
+        run: |
+          docker run --rm -v "$PWD:/w" -w /w \
+            -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
+            archlinux:base-devel \
+            bash colibri-cuda-bin/build.sh \
+              "${{ steps.decide.outputs.tag }}" "${{ steps.decide.outputs.ver }}" \
+              "${{ steps.decide.outputs.rel }}" "${{ steps.decide.outputs.cudamajor }}"
+
+      - name: Publish release asset
+        if: steps.decide.outputs.build == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          name=colibri-cuda-bin-${{ steps.decide.outputs.ver }}-${{ steps.decide.outputs.rel }}
+          gh release create "$name" "out/$name-x86_64.tar.zst" \
+            --title "$name" --latest=false \
+            --notes "colibri ${{ steps.decide.outputs.tag }} (JustVugg/colibri@$(cat out/commit)), CUDA ${{ steps.decide.outputs.cudamajor }}, sm_120, znver5. Installed by colibri-cuda-bin/PKGBUILD; not meant for direct download."
+
+      - name: Commit PKGBUILD and .SRCINFO
+        if: steps.decide.outputs.build == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add colibri-cuda-bin/PKGBUILD colibri-cuda-bin/.SRCINFO
+          git commit -m "colibri-cuda-bin ${{ steps.decide.outputs.ver }}-${{ steps.decide.outputs.rel }}: colibri ${{ steps.decide.outputs.tag }}, CUDA ${{ steps.decide.outputs.cudamajor }}"
+          git pull --rebase
+          git push

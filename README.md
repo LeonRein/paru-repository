@@ -8,6 +8,7 @@ here can be installed and upgraded with the same commands.
 | --- | --- |
 | [`transparent-xcursor-theme`](transparent-xcursor-theme) | Fully transparent Xcursor theme, for hiding the pointer in cage/kiosk sessions |
 | [`auto-loudness`](auto-loudness) | ISO 226:2023 loudness compensation that follows the Focusrite Scarlett volume knob |
+| [`colibri-cuda-bin`](colibri-cuda-bin) | [Colibri](https://github.com/JustVugg/colibri) MoE inference engine with CUDA and Vulkan, built for RTX 50 + Zen 5 |
 
 Nothing here is compiled on your machine. Each package installs a prebuilt
 release asset, so no build tooling is pulled in — installing
@@ -73,6 +74,8 @@ branch or tag — a commit cannot be moved afterwards.
 
 ## Updating a package
 
+`colibri-cuda-bin` updates itself; see below. For the others:
+
 Bump `pkgver`, update `sha256sums` to the new release's checksum, reset
 `pkgrel=1`, regenerate `.SRCINFO`, and push. Changing only the packaging and not
 the upstream version means keeping `pkgver` and incrementing `pkgrel` instead.
@@ -80,3 +83,18 @@ the upstream version means keeping `pkgver` and incrementing `pkgrel` instead.
 For `transparent-xcursor-theme` the checksum comes straight from its release
 workflow: the run summary prints the exact `pkgver` and `sha256sums` lines to
 paste in. `updpkgsums` (from `pacman-contrib`) recomputes them locally.
+
+## colibri-cuda-bin: built here, updated by a bot
+
+Upstream colibri ships CUDA builds for Windows only, so this repository
+builds the Linux one itself. [`.github/workflows/colibri-cuda-bin.yml`](.github/workflows/colibri-cuda-bin.yml)
+runs daily and builds only when there is something new: a colibri release,
+a new CUDA major version in Arch (the engines link `libcudart.so.<major>`),
+a manual run with *force*, or a push to `colibri-cuda-bin/build.sh`. It
+compiles in an `archlinux:base-devel` container (`build.sh`), attaches the
+result to a release of this repository (`colibri-cuda-bin-<pkgver>-<pkgrel>`)
+and commits the new `PKGBUILD`/`.SRCINFO`. Installing is a download, as for
+the other packages. Do not edit the version lines of that `PKGBUILD` by hand.
+
+The build targets one machine: CUDA `sm_120` (RTX 50 series) and
+`-march=znver5` (Ryzen 9000). Change both in `build.sh` for other hardware.

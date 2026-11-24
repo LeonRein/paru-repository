@@ -1,0 +1,36 @@
+# Maintainer: Leon Rein <leon@lr-net.com>
+#
+# Prebuilt by .github/workflows/colibri-cuda-bin.yml (build.sh): it checks
+# daily for a new colibri release, builds it with CUDA and Vulkan in an Arch
+# container, attaches the result to a release of this repository and commits
+# the new pkgver/pkgrel/_cudamajor/_commit/sha256sums here. Do not edit those
+# lines by hand. Packaging changes go in build.sh; pushing it triggers a
+# rebuild with pkgrel + 1.
+#
+# Built for one machine: CUDA for RTX 50 cards only (sm_120), CPU code for
+# Zen 5 (znver5, AVX-512). Upstream's Linux release has no CUDA.
+
+pkgname=colibri-cuda-bin
+pkgver=0
+pkgrel=1
+_cudamajor=13
+_commit=none
+pkgdesc='Colibri MoE inference engine with CUDA (RTX 50) and Vulkan, prebuilt for Zen 5'
+arch=('x86_64')
+url='https://github.com/JustVugg/colibri'
+license=('Apache-2.0')
+# The engines link libcudart/libcublas from the cuda package; a new CUDA
+# major release makes the workflow rebuild against it.
+depends=('glibc' 'gcc-libs' 'python' 'cuda' 'nvidia-utils' 'vulkan-icd-loader')
+optdepends=('python-numpy: image/audio features and converters'
+            'python-pillow: multimodal image input'
+            'python-huggingface-hub: model download helpers')
+provides=("colibri=$pkgver")
+conflicts=('colibri' 'colibri-bin' 'colibri-git' 'colibri-cuda')
+options=('!strip' '!debug')
+source=("$pkgname-$pkgver-$pkgrel-x86_64.tar.zst::https://github.com/LeonRein/paru-repository/releases/download/$pkgname-$pkgver-$pkgrel/$pkgname-$pkgver-$pkgrel-x86_64.tar.zst")
+sha256sums=('SKIP')
+
+package() {
+	cp -a usr "$pkgdir/"
+}

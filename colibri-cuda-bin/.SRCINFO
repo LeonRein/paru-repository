@@ -1,6 +1,6 @@
 pkgbase = colibri-cuda-bin
 	pkgdesc = Colibri MoE inference engine with CUDA (RTX 50) and Vulkan, prebuilt for Zen 5
-	pkgver = 0
+	pkgver = 2.2.0
 	pkgrel = 1
 	url = https://github.com/JustVugg/colibri
 	arch = x86_64
@@ -14,14 +14,14 @@ pkgbase = colibri-cuda-bin
 	optdepends = python-numpy: image/audio features and converters
 	optdepends = python-pillow: multimodal image input
 	optdepends = python-huggingface-hub: model download helpers
-	provides = colibri=0
+	provides = colibri=2.2.0
 	conflicts = colibri
 	conflicts = colibri-bin
 	conflicts = colibri-git
 	conflicts = colibri-cuda
 	options = !strip
 	options = !debug
-	source = colibri-cuda-bin-0-1-x86_64.tar.zst::https://github.com/LeonRein/paru-repository/releases/download/colibri-cuda-bin-0-1/colibri-cuda-bin-0-1-x86_64.tar.zst
-	sha256sums = SKIP
+	source = colibri-cuda-bin-2.2.0-1-x86_64.tar.zst::https://github.com/LeonRein/paru-repository/releases/download/colibri-cuda-bin-2.2.0-1/colibri-cuda-bin-2.2.0-1-x86_64.tar.zst
+	sha256sums = c6e62ec34bc9d4bc24f1845cbcbcc9906fa52d8cdbeab912ad8b6e65d7d5aa26
 
 pkgname = colibri-cuda-bin

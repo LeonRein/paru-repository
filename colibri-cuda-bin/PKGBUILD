@@ -11,10 +11,10 @@
 # Zen 5 (znver5, AVX-512). Upstream's Linux release has no CUDA.
 
 pkgname=colibri-cuda-bin
-pkgver=0
+pkgver=2.2.0
 pkgrel=1
 _cudamajor=13
-_commit=none
+_commit=e479104ae01bdc40ce81e675299b1d230891b321
 pkgdesc='Colibri MoE inference engine with CUDA (RTX 50) and Vulkan, prebuilt for Zen 5'
 arch=('x86_64')
 url='https://github.com/JustVugg/colibri'
@@ -29,7 +29,7 @@ provides=("colibri=$pkgver")
 conflicts=('colibri' 'colibri-bin' 'colibri-git' 'colibri-cuda')
 options=('!strip' '!debug')
 source=("$pkgname-$pkgver-$pkgrel-x86_64.tar.zst::https://github.com/LeonRein/paru-repository/releases/download/$pkgname-$pkgver-$pkgrel/$pkgname-$pkgver-$pkgrel-x86_64.tar.zst")
-sha256sums=('SKIP')
+sha256sums=('c6e62ec34bc9d4bc24f1845cbcbcc9906fa52d8cdbeab912ad8b6e65d7d5aa26')
 
 package() {
 	cp -a usr "$pkgdir/"
